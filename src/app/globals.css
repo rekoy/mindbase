@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-arctic: #f1f6f4;
+  --color-mint: #d9e8e2;
+  --color-forsythia: #ffc801;
+  --color-saffron: #ff9932;
+  --color-nocturnal: #114c5a;
+  --color-noir: #172b36;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-space), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-press), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-arctic);
+  color: var(--color-noir);
+}
+
+::selection {
+  background: var(--color-forsythia);
+  color: var(--color-noir);
+}
+
+/*
+ * Pixel borders: four hard offset shadows draw a 4px outline with notched
+ * corners, two more draw the stepped drop shadow. Override --line / --shade
+ * per element (e.g. `[--line:var(--color-forsythia)]`).
+ */
+@layer components {
+  .px-box {
+    box-shadow:
+      0 -4px 0 0 var(--line, var(--color-noir)),
+      0 4px 0 0 var(--line, var(--color-noir)),
+      -4px 0 0 0 var(--line, var(--color-noir)),
+      4px 0 0 0 var(--line, var(--color-noir)),
+      4px 8px 0 0 var(--shade, rgb(23 43 54 / 0.28)),
+      8px 4px 0 0 var(--shade, rgb(23 43 54 / 0.28));
+  }
+
+  .px-flat {
+    box-shadow:
+      0 -4px 0 0 var(--line, var(--color-noir)),
+      0 4px 0 0 var(--line, var(--color-noir)),
+      -4px 0 0 0 var(--line, var(--color-noir)),
+      4px 0 0 0 var(--line, var(--color-noir));
+  }
+
+  .px-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+    box-shadow:
+      0 -4px 0 0 var(--line, var(--color-noir)),
+      0 4px 0 0 var(--line, var(--color-noir)),
+      -4px 0 0 0 var(--line, var(--color-noir)),
+      4px 0 0 0 var(--line, var(--color-noir)),
+      4px 8px 0 0 var(--shade, var(--color-noir)),
+      8px 4px 0 0 var(--shade, var(--color-noir));
+  }
+
+  .px-btn:hover {
+    filter: brightness(1.06);
+  }
+
+  .px-btn:active,
+  .px-btn[aria-pressed="true"] {
+    transform: translate(4px, 4px);
+    box-shadow:
+      0 -4px 0 0 var(--line, var(--color-noir)),
+      0 4px 0 0 var(--line, var(--color-noir)),
+      -4px 0 0 0 var(--line, var(--color-noir)),
+      4px 0 0 0 var(--line, var(--color-noir));
+  }
+
+  .px-btn:focus-visible,
+  .px-input:focus-visible {
+    outline: 4px solid var(--color-saffron);
+    outline-offset: 6px;
+  }
+
+  .px-input {
+    background: var(--color-arctic);
+    box-shadow:
+      0 -4px 0 0 var(--color-noir),
+      0 4px 0 0 var(--color-noir),
+      -4px 0 0 0 var(--color-noir),
+      4px 0 0 0 var(--color-noir),
+      inset 4px 4px 0 0 rgb(23 43 54 / 0.12);
+  }
+
+  .pixelated {
+    image-rendering: pixelated;
+  }
+}
+
+/* 8-bit motion: stepped, never eased */
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@keyframes drift {
+  from { transform: translateX(-20vw); }
+  to { transform: translateX(110vw); }
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.anim-twinkle { animation: twinkle 2.4s steps(2, jump-none) infinite; }
+.anim-drift { animation: drift 60s steps(120) infinite; }
+.anim-bob { animation: bob 1.2s steps(2, jump-none) infinite; }
+.anim-blink { animation: blink 1s steps(1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-twinkle,
+  .anim-drift,
+  .anim-bob,
+  .anim-blink {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }
